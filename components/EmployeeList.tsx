@@ -21,22 +21,42 @@ import {
   ChevronRight,
   Shield,
   Info,
-  Check
+  Check,
+  Banknote,
+  History,
+  EyeOff,
+  Eye,
+  ArrowUpRight,
+  Plus,
+  ShieldAlert
 } from 'lucide-react';
-import { MOCK_EMPLOYEES, DEPARTMENTS } from '../constants';
-import { Employee, EmployeeStatus } from '../types';
+import { MOCK_EMPLOYEES, DEPARTMENTS, ROLE_PERMISSIONS } from '../constants';
+import { Employee, EmployeeStatus, UserRole } from '../types';
 
-const EmployeeList: React.FC = () => {
+interface EmployeeListProps {
+  currentUserRole: UserRole;
+}
+
+const EmployeeList: React.FC<EmployeeListProps> = ({ currentUserRole }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'personal' | 'job' | 'privacy'>('personal');
+  const [activeTab, setActiveTab] = useState<'personal' | 'job' | 'privacy' | 'pay'>('personal');
   const [addStep, setAddStep] = useState(1);
+  const [showSalary, setShowSalary] = useState(false);
+
+  const rolePermissions = ROLE_PERMISSIONS[currentUserRole] || {};
+  const canReadPay = rolePermissions['payDetails']?.read;
+  const canWritePay = rolePermissions['payDetails']?.write;
 
   const filteredEmployees = MOCK_EMPLOYEES.filter(emp => 
     `${emp.firstName} ${emp.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
     emp.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const formatCurrency = (val: number) => {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+  };
 
   const handleExportData = (emp: Employee) => {
     alert(`Generating GDPR Subject Access Request (SAR) package for ${emp.firstName} ${emp.lastName}...\nThis will include all PII, audit logs, and processing purposes in JSON format.`);
@@ -235,19 +255,30 @@ const EmployeeList: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Supervisor / Manager</label>
-                  <input type="text" className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Search by name..." />
-                </div>
-                <div>
-                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Job Location</label>
-                  <div className="relative">
-                    <MapPin size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                    <input type="text" className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="e.g. Global HQ (Palo Alto)" />
+              {/* Conditional Pay Section in Add Flow */}
+              {canWritePay && (
+                <div className="bg-amber-50 p-6 rounded-2xl border border-amber-100 animate-in slide-in-from-top-2">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Banknote className="text-amber-600" size={20} />
+                    <h3 className="text-sm font-bold text-amber-900 uppercase tracking-widest">Initial Pay Details</h3>
+                  </div>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-[10px] font-bold text-amber-700 uppercase tracking-widest mb-2">Hiring Salary (Annual)</label>
+                      <input type="number" className="w-full px-4 py-2.5 bg-white border border-amber-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 outline-none" placeholder="e.g. 120000" />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-amber-700 uppercase tracking-widest mb-2">Pay Grade</label>
+                      <select className="w-full px-4 py-2.5 bg-white border border-amber-200 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 outline-none appearance-none">
+                        <option>Grade 1 (Junior)</option>
+                        <option>Grade 5 (Intermediate)</option>
+                        <option>Grade 8 (Senior)</option>
+                        <option>Grade 10 (Director)</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
 
@@ -464,7 +495,10 @@ const EmployeeList: React.FC = () => {
       {/* Employee Details Side-over Drawer */}
       {selectedEmployee && !isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex justify-end">
-          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onClick={() => setSelectedEmployee(null)}></div>
+          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onClick={() => {
+            setSelectedEmployee(null);
+            setShowSalary(false);
+          }}></div>
           
           <div className="relative w-full max-w-xl bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right-full duration-300">
             {/* Drawer Header */}
@@ -482,16 +516,20 @@ const EmployeeList: React.FC = () => {
             </div>
 
             {/* Tab Navigation */}
-            <div className="flex border-b border-slate-100 px-6">
+            <div className="flex border-b border-slate-100 px-6 overflow-x-auto scrollbar-hide">
               {[
                 { id: 'personal', label: 'Personal', icon: UserCheck },
-                { id: 'job', label: 'Job & Salary', icon: Briefcase },
-                { id: 'privacy', label: 'GDPR & Privacy', icon: Lock },
+                { id: 'job', label: 'Job', icon: Briefcase },
+                { id: 'pay', label: 'Compensation', icon: Banknote },
+                { id: 'privacy', label: 'GDPR', icon: Lock },
               ].map(tab => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-2 px-4 py-4 text-sm font-medium transition-colors border-b-2 -mb-px ${
+                  onClick={() => {
+                    setActiveTab(tab.id as any);
+                    setShowSalary(false);
+                  }}
+                  className={`flex items-center gap-2 px-4 py-4 text-sm font-medium transition-colors border-b-2 -mb-px whitespace-nowrap ${
                     activeTab === tab.id 
                       ? 'border-indigo-600 text-indigo-600' 
                       : 'border-transparent text-slate-500 hover:text-slate-700'
@@ -588,6 +626,91 @@ const EmployeeList: React.FC = () => {
                 </div>
               )}
 
+              {activeTab === 'pay' && (
+                <div className="space-y-6 animate-in fade-in duration-300">
+                  {!canReadPay ? (
+                    <div className="flex flex-col items-center justify-center p-12 text-center bg-slate-50 rounded-3xl border border-slate-100 border-dashed">
+                      <div className="bg-white p-4 rounded-2xl shadow-sm text-slate-300 mb-4">
+                        <Lock size={48} />
+                      </div>
+                      <h4 className="text-lg font-bold text-slate-800">Access Restricted</h4>
+                      <p className="text-sm text-slate-500 mt-2 max-w-xs">
+                        Pay details are sensitive PII. Only authorized HR managers can view or modify salary records.
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="p-6 bg-indigo-900 rounded-3xl text-white relative overflow-hidden group">
+                        <div className="relative z-10">
+                          <p className="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-2">Current Annual Base</p>
+                          <div className="flex items-center justify-between">
+                            <h3 className="text-4xl font-black">
+                              {showSalary ? formatCurrency(selectedEmployee.currentSalary || 0) : '€ •••,•••.••'}
+                            </h3>
+                            <button 
+                              onClick={() => {
+                                setShowSalary(!showSalary);
+                                console.log(`AUDIT: ${currentUserRole} viewed salary for ${selectedEmployee.id}`);
+                              }}
+                              className="p-3 bg-white/10 hover:bg-white/20 rounded-2xl transition-colors backdrop-blur-sm"
+                            >
+                              {showSalary ? <EyeOff size={24} /> : <Eye size={24} />}
+                            </button>
+                          </div>
+                          <div className="mt-4 flex items-center gap-4">
+                            <div className="px-3 py-1 bg-white/10 rounded-full text-[10px] font-bold">Grade: {selectedEmployee.payGrade}</div>
+                            <div className="px-3 py-1 bg-white/10 rounded-full text-[10px] font-bold">Currency: USD</div>
+                          </div>
+                        </div>
+                        <Banknote className="absolute -bottom-8 -right-8 text-white/5 h-48 w-48 group-hover:scale-110 transition-transform duration-700" />
+                      </div>
+
+                      <section>
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                            <History size={14} />
+                            Compensation History
+                          </h4>
+                          {canWritePay && (
+                            <button className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 transition-colors">
+                              <Plus size={14} /> Update Pay
+                            </button>
+                          )}
+                        </div>
+                        <div className="space-y-3">
+                          {selectedEmployee.salaryHistory?.map((record) => (
+                            <div key={record.id} className="p-4 bg-white border border-slate-100 rounded-2xl shadow-sm hover:border-indigo-100 transition-colors group">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-bold text-slate-800">{record.changeReason}</span>
+                                <span className="text-sm font-black text-indigo-600">
+                                  {showSalary ? formatCurrency(record.amount) : '€ •••,•••'}
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] text-slate-400 font-medium">Effective: {record.effectiveDate}</span>
+                                <div className="flex items-center gap-1 text-[10px] text-slate-400 font-bold uppercase tracking-tight">
+                                  Approved by {record.approvedBy}
+                                  <ArrowUpRight size={10} />
+                                </div>
+                              </div>
+                            </div>
+                          )) || (
+                            <p className="text-xs text-slate-400 italic text-center py-4">No historical pay records found.</p>
+                          )}
+                        </div>
+                      </section>
+
+                      <div className="p-4 bg-amber-50 rounded-2xl border border-amber-100 flex items-start gap-3">
+                        <ShieldAlert size={18} className="text-amber-600 shrink-0 mt-0.5" />
+                        <p className="text-[11px] text-amber-800 leading-relaxed">
+                          <strong>HR Integrity Check:</strong> This view is being monitored. Authorized viewing is permitted for payroll processing and performance appraisal purposes only.
+                        </p>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+
               {activeTab === 'privacy' && (
                 <div className="space-y-6 animate-in fade-in duration-300">
                   <div className="p-4 bg-green-50 rounded-2xl border border-green-100 flex items-start gap-4">
@@ -633,7 +756,7 @@ const EmployeeList: React.FC = () => {
                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-4">Encryption Metadata</p>
                     <div className="flex items-center gap-2 text-xs text-slate-500">
                       <Lock size={12} className="text-indigo-400" />
-                      <span>Sensitive fields (DOB, Home Address) are hashed with <strong>SHA-256</strong>.</span>
+                      <span>Sensitive fields (DOB, Home Address, Pay) are protected by **Encryption at Rest**.</span>
                     </div>
                   </div>
                 </div>

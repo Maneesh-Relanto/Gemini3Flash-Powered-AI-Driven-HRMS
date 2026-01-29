@@ -50,6 +50,7 @@ const Settings: React.FC = () => {
     const modules = [
       { id: 'dashboard', label: 'Dashboard', desc: 'Core KPIs and AI Insights' },
       { id: 'employees', label: 'PIM (Personnel)', desc: 'Employee Directory and Profiles' },
+      { id: 'payDetails', label: 'Pay Details (PII)', desc: 'Salaries, History & Payroll Info' },
       { id: 'leave', label: 'Leave Management', desc: 'Vacation and Sick Leave Tracking' },
       { id: 'timesheets', label: 'Time Tracking', desc: 'Weekly Timesheets and Projects' },
       { id: 'compliance', label: 'GDPR / Compliance', desc: 'Regulatory Oversight and SAR' },

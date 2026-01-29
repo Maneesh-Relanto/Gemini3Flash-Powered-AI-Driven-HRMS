@@ -11,28 +11,33 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<string, Permission>> = {
     dashboard: { read: true, write: false },
     leave: { read: true, write: true },
     timesheets: { read: true, write: true },
+    payDetails: { read: false, write: false }, // Cannot see others' salaries
   },
   [UserRole.HR_EXECUTIVE]: {
     dashboard: { read: true, write: false },
     employees: { read: true, write: false },
     leave: { read: true, write: true },
+    payDetails: { read: true, write: false }, // Can view but not modify
   },
   [UserRole.HR_MANAGER]: {
     dashboard: { read: true, write: false },
     employees: { read: true, write: true },
     leave: { read: true, write: true },
     compliance: { read: true, write: true },
+    payDetails: { read: true, write: true }, // Full access
   },
   [UserRole.OPS_EXECUTIVE]: {
     dashboard: { read: true, write: false },
     employees: { read: true, write: false },
     timesheets: { read: true, write: false },
+    payDetails: { read: false, write: false }, // Restricted
   },
   [UserRole.OPS_MANAGER]: {
     dashboard: { read: true, write: false },
     employees: { read: true, write: false },
     timesheets: { read: true, write: true },
     roadmap: { read: true, write: false },
+    payDetails: { read: false, write: false }, // Restricted
   },
   [UserRole.APP_ADMIN]: {
     dashboard: { read: true, write: true },
@@ -40,6 +45,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<string, Permission>> = {
     leave: { read: true, write: true },
     timesheets: { read: true, write: true },
     compliance: { read: true, write: false },
+    payDetails: { read: true, write: true },
   },
   [UserRole.SYSTEM_ADMIN]: {
     dashboard: { read: true, write: true },
@@ -49,6 +55,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<string, Permission>> = {
     compliance: { read: true, write: true },
     roadmap: { read: true, write: true },
     settings: { read: true, write: true },
+    payDetails: { read: true, write: true },
   },
 };
 
@@ -75,7 +82,12 @@ export const MOCK_EMPLOYEES: Employee[] = [
       name: 'John Connor',
       relationship: 'Son',
       phone: '+1 (555) 9999'
-    }
+    },
+    currentSalary: 125000,
+    salaryHistory: [
+      { id: 'S1', amount: 110000, currency: 'USD', effectiveDate: '2022-03-15', changeReason: 'Hiring Salary', approvedBy: 'HR Lead' },
+      { id: 'S2', amount: 125000, currency: 'USD', effectiveDate: '2023-04-01', changeReason: 'Performance Review', approvedBy: 'Sarah Connor' },
+    ]
   },
   {
     id: 'EMP002',
@@ -99,7 +111,11 @@ export const MOCK_EMPLOYEES: Employee[] = [
       name: 'Kyle Reese',
       relationship: 'Partner',
       phone: '+1 (555) 1111'
-    }
+    },
+    currentSalary: 140000,
+    salaryHistory: [
+      { id: 'S3', amount: 140000, currency: 'USD', effectiveDate: '2021-11-02', changeReason: 'Hiring Salary', approvedBy: 'Board' },
+    ]
   },
   {
     id: 'EMP003',
@@ -122,7 +138,8 @@ export const MOCK_EMPLOYEES: Employee[] = [
       name: 'Sarah Connor',
       relationship: 'Friend',
       phone: '+1 (555) 0123'
-    }
+    },
+    currentSalary: 95000
   }
 ];
 

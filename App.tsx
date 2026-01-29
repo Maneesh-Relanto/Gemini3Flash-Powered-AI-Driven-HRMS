@@ -31,7 +31,7 @@ const App: React.FC = () => {
       case 'dashboard':
         return <Dashboard />;
       case 'employees':
-        return <EmployeeList />;
+        return <EmployeeList currentUserRole={userRole} />;
       case 'leave':
         return <LeaveManagement />;
       case 'timesheets':

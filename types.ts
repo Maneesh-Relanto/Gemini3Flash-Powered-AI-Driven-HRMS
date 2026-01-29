@@ -22,6 +22,15 @@ export enum UserRole {
   SYSTEM_ADMIN = 'System Admin'
 }
 
+export interface SalaryRecord {
+  id: string;
+  amount: number;
+  currency: string;
+  effectiveDate: string;
+  changeReason: string;
+  approvedBy: string;
+}
+
 export interface Employee {
   id: string;
   firstName: string;
@@ -55,6 +64,8 @@ export interface Employee {
   gender?: 'Male' | 'Female' | 'Other' | 'Prefer not to say';
   nationality?: string;
   maritalStatus?: string;
+  currentSalary?: number;
+  salaryHistory?: SalaryRecord[];
 }
 
 export interface LeaveRequest {
