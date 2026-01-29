@@ -11,33 +11,33 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<string, Permission>> = {
     dashboard: { read: true, write: false },
     leave: { read: true, write: true },
     timesheets: { read: true, write: true },
-    payDetails: { read: false, write: false }, // Cannot see others' salaries
+    payDetails: { read: false, write: false },
   },
   [UserRole.HR_EXECUTIVE]: {
     dashboard: { read: true, write: false },
     employees: { read: true, write: false },
     leave: { read: true, write: true },
-    payDetails: { read: true, write: false }, // Can view but not modify
+    payDetails: { read: true, write: true }, // HR Team has full access
   },
   [UserRole.HR_MANAGER]: {
     dashboard: { read: true, write: false },
     employees: { read: true, write: true },
     leave: { read: true, write: true },
     compliance: { read: true, write: true },
-    payDetails: { read: true, write: true }, // Full access
+    payDetails: { read: true, write: true }, // HR Team has full access
   },
   [UserRole.OPS_EXECUTIVE]: {
     dashboard: { read: true, write: false },
     employees: { read: true, write: false },
     timesheets: { read: true, write: false },
-    payDetails: { read: false, write: false }, // Restricted
+    payDetails: { read: false, write: false },
   },
   [UserRole.OPS_MANAGER]: {
     dashboard: { read: true, write: false },
     employees: { read: true, write: false },
     timesheets: { read: true, write: true },
     roadmap: { read: true, write: false },
-    payDetails: { read: false, write: false }, // Restricted
+    payDetails: { read: false, write: false },
   },
   [UserRole.APP_ADMIN]: {
     dashboard: { read: true, write: true },
@@ -45,7 +45,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<string, Permission>> = {
     leave: { read: true, write: true },
     timesheets: { read: true, write: true },
     compliance: { read: true, write: false },
-    payDetails: { read: true, write: true },
+    payDetails: { read: false, write: false }, // Restricted per request
   },
   [UserRole.SYSTEM_ADMIN]: {
     dashboard: { read: true, write: true },
@@ -55,7 +55,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<string, Permission>> = {
     compliance: { read: true, write: true },
     roadmap: { read: true, write: true },
     settings: { read: true, write: true },
-    payDetails: { read: true, write: true },
+    payDetails: { read: false, write: false }, // Restricted per request
   },
 };
 
