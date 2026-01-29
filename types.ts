@@ -100,3 +100,15 @@ export interface OfficeLocation {
   country: string;
   type: 'HQ' | 'Branch' | 'Remote Hub';
 }
+
+export interface AuditLogEntry {
+  id: string;
+  user: string;
+  role: UserRole;
+  action: string;
+  module: string;
+  date: string;
+  time: string;
+  details: string;
+  status: 'Success' | 'Failure' | 'Warning';
+}

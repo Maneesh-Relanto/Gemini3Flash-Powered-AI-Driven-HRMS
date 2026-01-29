@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Calendar, 
   Users, 
@@ -12,15 +12,134 @@ import {
   Building2, 
   Palmtree,
   Settings as SettingsIcon,
-  ChevronRight
+  ChevronRight,
+  ShieldAlert,
+  History,
+  Activity,
+  UserCircle,
+  Clock,
+  Filter,
+  ArrowUpDown
 } from 'lucide-react';
-import { MOCK_HOLIDAYS, MOCK_CLIENTS, MOCK_LOCATIONS } from '../constants';
+import { MOCK_HOLIDAYS, MOCK_CLIENTS, MOCK_LOCATIONS, MOCK_AUDIT_LOGS } from '../constants';
+import { UserRole } from '../types';
 
-type SettingsTab = 'holidays' | 'clients' | 'locations';
+type SettingsTab = 'holidays' | 'clients' | 'locations' | 'audit';
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState<SettingsTab>('holidays');
   const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredAuditLogs = useMemo(() => {
+    return MOCK_AUDIT_LOGS.filter(log => 
+      log.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      log.action.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      log.details.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery]);
+
+  const renderAuditLogs = () => (
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-400">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h3 className="text-lg font-bold text-slate-800">System Audit Logs</h3>
+          <p className="text-sm text-slate-500">Immutable transaction record of all system activities (GDPR Art. 30 compliant).</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+            <input 
+              type="text" 
+              placeholder="Filter logs..." 
+              className="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64 shadow-sm"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <button className="flex items-center gap-2 px-3 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors">
+            <Filter size={14} />
+            More Filters
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-slate-50 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+              <tr>
+                <th className="px-6 py-4">Who (User)</th>
+                <th className="px-6 py-4">Role</th>
+                <th className="px-6 py-4">Action</th>
+                <th className="px-6 py-4">Module</th>
+                <th className="px-6 py-4">Timestamp</th>
+                <th className="px-6 py-4">Status</th>
+                <th className="px-6 py-4">Details</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {filteredAuditLogs.map((log) => (
+                <tr key={log.id} className="hover:bg-slate-50/50 transition-colors group">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      <div className="h-6 w-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+                        <UserCircle size={14} />
+                      </div>
+                      <span className="text-sm font-bold text-slate-700">{log.user}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">
+                      {log.role}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-sm font-medium text-slate-800">{log.action}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded text-[9px] font-bold uppercase">
+                      {log.module}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex flex-col">
+                      <span className="text-xs font-bold text-slate-700">{log.date}</span>
+                      <span className="text-[10px] text-slate-400 font-medium">{log.time}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-1.5">
+                      <div className={`h-1.5 w-1.5 rounded-full ${
+                        log.status === 'Success' ? 'bg-green-500' : log.status === 'Failure' ? 'bg-red-500' : 'bg-orange-500'
+                      }`}></div>
+                      <span className={`text-[10px] font-bold uppercase ${
+                        log.status === 'Success' ? 'text-green-600' : log.status === 'Failure' ? 'text-red-600' : 'text-orange-600'
+                      }`}>
+                        {log.status}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 max-w-xs truncate">
+                    <span className="text-[11px] text-slate-500 leading-tight">
+                      {log.details}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div className="mt-4 flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">
+        <span>Showing {filteredAuditLogs.length} recent transactions</span>
+        <div className="flex items-center gap-4">
+          <button className="hover:text-indigo-600 transition-colors">Download CSV Report</button>
+          <button className="hover:text-indigo-600 transition-colors">Archive Logs</button>
+        </div>
+      </div>
+    </div>
+  );
 
   const renderHolidays = () => (
     <div className="animate-in fade-in slide-in-from-bottom-2 duration-400">
@@ -177,6 +296,7 @@ const Settings: React.FC = () => {
     { id: 'holidays', label: 'Holidays', icon: Palmtree },
     { id: 'clients', label: 'Clients', icon: Building2 },
     { id: 'locations', label: 'Locations', icon: MapPin },
+    { id: 'audit', label: 'Audit Logs', icon: History },
   ];
 
   return (
@@ -184,13 +304,17 @@ const Settings: React.FC = () => {
       {/* Side Tabs Navigation */}
       <div className="w-64 shrink-0">
         <div className="bg-white p-2 rounded-2xl border border-slate-100 shadow-sm space-y-1">
-          <div className="px-4 py-3 mb-2">
-            <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest">Master Data</h2>
+          <div className="px-4 py-3 mb-2 flex items-center justify-between">
+            <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest">System Master</h2>
+            <ShieldAlert size={14} className="text-indigo-400" />
           </div>
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as SettingsTab)}
+              onClick={() => {
+                setActiveTab(tab.id as SettingsTab);
+                setSearchQuery('');
+              }}
               className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
                 activeTab === tab.id 
                   ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' 
@@ -208,14 +332,14 @@ const Settings: React.FC = () => {
 
         <div className="mt-6 bg-slate-900 rounded-2xl p-6 text-white relative overflow-hidden group">
           <div className="relative z-10">
-            <p className="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">System Health</p>
-            <h4 className="text-lg font-bold mb-2">DB Node: Active</h4>
+            <p className="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">System Security</p>
+            <h4 className="text-lg font-bold mb-2">Audit: Enabled</h4>
             <div className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></div>
-              <span className="text-[10px] font-bold text-slate-400">Lat: 12ms</span>
+              <span className="text-[10px] font-bold text-slate-400">IP Filtering: ON</span>
             </div>
           </div>
-          <SettingsIcon size={80} className="absolute -bottom-4 -right-4 text-white/5 group-hover:rotate-45 transition-transform duration-1000" />
+          <Activity size={80} className="absolute -bottom-4 -right-4 text-white/5 group-hover:scale-110 transition-transform duration-1000" />
         </div>
       </div>
 
@@ -224,6 +348,7 @@ const Settings: React.FC = () => {
         {activeTab === 'holidays' && renderHolidays()}
         {activeTab === 'clients' && renderClients()}
         {activeTab === 'locations' && renderLocations()}
+        {activeTab === 'audit' && renderAuditLogs()}
       </div>
     </div>
   );

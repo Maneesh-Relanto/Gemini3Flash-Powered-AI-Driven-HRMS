@@ -1,5 +1,5 @@
 
-import { Employee, EmployeeStatus, LeaveRequest, TimesheetEntry, LeaveStatus, UserRole, Holiday, Client, OfficeLocation } from './types';
+import { Employee, EmployeeStatus, LeaveRequest, TimesheetEntry, LeaveStatus, UserRole, Holiday, Client, OfficeLocation, AuditLogEntry } from './types';
 
 export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
   [UserRole.EMPLOYEE]: ['dashboard', 'leave', 'timesheets'],
@@ -102,6 +102,15 @@ export const MOCK_LOCATIONS: OfficeLocation[] = [
   { id: 'LOC001', name: 'Global HQ', city: 'Palo Alto', country: 'USA', type: 'HQ' },
   { id: 'LOC002', name: 'Europe Hub', city: 'Berlin', country: 'Germany', type: 'Branch' },
   { id: 'LOC003', name: 'APAC Center', city: 'Singapore', country: 'Singapore', type: 'Branch' },
+];
+
+export const MOCK_AUDIT_LOGS: AuditLogEntry[] = [
+  { id: 'AUD001', user: 'Marcus Wright', role: UserRole.SYSTEM_ADMIN, action: 'User Login', module: 'Auth', date: '2024-05-15', time: '09:00:01', details: 'Successful login from IP 192.168.1.45', status: 'Success' },
+  { id: 'AUD002', user: 'Sarah Connor', role: UserRole.HR_MANAGER, action: 'PII Access', module: 'PIM', date: '2024-05-15', time: '10:22:15', details: 'Accessed profile for EMP003 (Kyle Reese)', status: 'Success' },
+  { id: 'AUD003', user: 'Marcus Wright', role: UserRole.SYSTEM_ADMIN, action: 'Config Update', module: 'Settings', date: '2024-05-15', time: '11:45:00', details: 'Added new holiday: Company Anniversary', status: 'Success' },
+  { id: 'AUD004', user: 'System', role: UserRole.SYSTEM_ADMIN, action: 'Auto-Purge', module: 'GDPR', date: '2024-05-15', time: '23:59:59', details: 'Cleanup of 3-year expired termination records', status: 'Success' },
+  { id: 'AUD005', user: 'Sarah Connor', role: UserRole.HR_MANAGER, action: 'SAR Export', module: 'Compliance', date: '2024-05-16', time: '14:10:22', details: 'Generated GDPR SAR for EMP001', status: 'Success' },
+  { id: 'AUD006', user: 'Sarah Connor', role: UserRole.HR_MANAGER, action: 'Failed Login', module: 'Auth', date: '2024-05-16', time: '14:15:05', details: 'Invalid credentials provided twice', status: 'Failure' },
 ];
 
 export const MOCK_LEAVE_REQUESTS: LeaveRequest[] = [
