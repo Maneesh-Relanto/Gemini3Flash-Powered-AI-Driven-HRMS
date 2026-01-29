@@ -1,0 +1,7 @@
+{
+  "name": "LuminaHR - Modern AI-Driven HRMS",
+  "description": "A comprehensive, GDPR-compliant Human Resource Management System with AI-powered insights, automated reporting, and secure employee data handling inspired by enterprise solutions like OrangeHRM.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
