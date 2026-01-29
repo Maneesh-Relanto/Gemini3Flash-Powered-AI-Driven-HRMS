@@ -25,9 +25,12 @@ export enum UserRole {
 export interface Employee {
   id: string;
   firstName: string;
+  middleName?: string;
   lastName: string;
   email: string;
+  personalEmail?: string;
   phone?: string;
+  mobile?: string;
   department: string;
   role: string;
   status: EmployeeStatus;
@@ -35,6 +38,7 @@ export interface Employee {
   avatar: string;
   gdprConsent: boolean;
   gdprConsentDate?: string;
+  legalBasis?: string;
   sensitiveDataEncrypted: boolean;
   payGrade?: string;
   supervisor?: string;
@@ -44,7 +48,13 @@ export interface Employee {
     phone: string;
   };
   address?: string;
+  city?: string;
+  country?: string;
+  zipCode?: string;
   dateOfBirth?: string;
+  gender?: 'Male' | 'Female' | 'Other' | 'Prefer not to say';
+  nationality?: string;
+  maritalStatus?: string;
 }
 
 export interface LeaveRequest {
