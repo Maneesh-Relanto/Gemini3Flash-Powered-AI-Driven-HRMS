@@ -1,5 +1,5 @@
 
-import { Employee, EmployeeStatus, LeaveStatus } from './types';
+import { Employee, EmployeeStatus, LeaveRequest, TimesheetEntry, LeaveStatus } from './types';
 
 export const MOCK_EMPLOYEES: Employee[] = [
   {
@@ -7,39 +7,117 @@ export const MOCK_EMPLOYEES: Employee[] = [
     firstName: 'Sarah',
     lastName: 'Connor',
     email: 'sarah.c@lumina.io',
+    phone: '+1 (555) 0123',
     department: 'Engineering',
     role: 'Lead Developer',
     status: EmployeeStatus.ACTIVE,
     joinDate: '2022-03-15',
     avatar: 'https://picsum.photos/seed/sarah/100/100',
     gdprConsent: true,
-    sensitiveDataEncrypted: true
+    gdprConsentDate: '2022-03-15 09:00 AM',
+    sensitiveDataEncrypted: true,
+    payGrade: 'Grade 8',
+    supervisor: 'Marcus Wright',
+    address: '123 Resistance Way, Los Angeles, CA',
+    dateOfBirth: '1985-05-12',
+    emergencyContact: {
+      name: 'John Connor',
+      relationship: 'Son',
+      phone: '+1 (555) 9999'
+    }
   },
   {
     id: 'EMP002',
     firstName: 'Marcus',
     lastName: 'Wright',
     email: 'marcus.w@lumina.io',
+    phone: '+1 (555) 0456',
     department: 'Human Resources',
     role: 'HR Manager',
     status: EmployeeStatus.ACTIVE,
     joinDate: '2021-11-02',
     avatar: 'https://picsum.photos/seed/marcus/100/100',
     gdprConsent: true,
-    sensitiveDataEncrypted: true
+    gdprConsentDate: '2021-11-02 10:30 AM',
+    sensitiveDataEncrypted: true,
+    payGrade: 'Grade 9',
+    supervisor: 'None',
+    address: '789 SkyNet Blvd, Palo Alto, CA',
+    dateOfBirth: '1975-08-22',
+    emergencyContact: {
+      name: 'Kyle Reese',
+      relationship: 'Partner',
+      phone: '+1 (555) 1111'
+    }
   },
   {
     id: 'EMP003',
     firstName: 'Kyle',
     lastName: 'Reese',
     email: 'kyle.r@lumina.io',
+    phone: '+1 (555) 0789',
     department: 'Sales',
     role: 'Account Executive',
     status: EmployeeStatus.ON_LEAVE,
     joinDate: '2023-01-10',
     avatar: 'https://picsum.photos/seed/kyle/100/100',
     gdprConsent: false,
-    sensitiveDataEncrypted: true
+    sensitiveDataEncrypted: true,
+    payGrade: 'Grade 6',
+    supervisor: 'Sarah Connor',
+    address: '456 Past Loop, New York, NY',
+    dateOfBirth: '1992-02-14',
+    emergencyContact: {
+      name: 'Sarah Connor',
+      relationship: 'Friend',
+      phone: '+1 (555) 0123'
+    }
+  }
+];
+
+export const MOCK_LEAVE_REQUESTS: LeaveRequest[] = [
+  {
+    id: 'LR001',
+    employeeId: 'EMP003',
+    employeeName: 'Kyle Reese',
+    type: 'Annual',
+    startDate: '2024-05-20',
+    endDate: '2024-05-24',
+    days: 5,
+    status: LeaveStatus.PENDING,
+    reason: 'Family vacation'
+  },
+  {
+    id: 'LR002',
+    employeeId: 'EMP001',
+    employeeName: 'Sarah Connor',
+    type: 'Sick',
+    startDate: '2024-05-15',
+    endDate: '2024-05-16',
+    days: 2,
+    status: LeaveStatus.APPROVED,
+    reason: 'Medical checkup'
+  }
+];
+
+export const MOCK_TIMESHEETS: TimesheetEntry[] = [
+  {
+    id: 'TS001',
+    employeeId: 'EMP001',
+    date: '2024-05-15',
+    hours: 8,
+    project: 'Project Genesis',
+    task: 'Backend Optimization',
+    status: 'Approved'
+  },
+  {
+    id: 'TS002',
+    employeeId: 'EMP001',
+    date: '2024-05-16',
+    hours: 7.5,
+    project: 'Project Genesis',
+    task: 'Bug Fixing',
+    status: 'Submitted'
   }
 ];
 

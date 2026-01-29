@@ -17,23 +17,46 @@ export interface Employee {
   firstName: string;
   lastName: string;
   email: string;
+  phone?: string;
   department: string;
   role: string;
   status: EmployeeStatus;
   joinDate: string;
   avatar: string;
   gdprConsent: boolean;
+  gdprConsentDate?: string;
   sensitiveDataEncrypted: boolean;
+  payGrade?: string;
+  supervisor?: string;
+  emergencyContact?: {
+    name: string;
+    relationship: string;
+    phone: string;
+  };
+  address?: string;
+  dateOfBirth?: string;
 }
 
 export interface LeaveRequest {
   id: string;
   employeeId: string;
-  type: string;
+  employeeName: string;
+  type: 'Annual' | 'Sick' | 'Personal' | 'Maternity/Paternity';
   startDate: string;
   endDate: string;
+  days: number;
   status: LeaveStatus;
   reason: string;
+}
+
+export interface TimesheetEntry {
+  id: string;
+  employeeId: string;
+  date: string;
+  hours: number;
+  project: string;
+  task: string;
+  status: 'Draft' | 'Submitted' | 'Approved' | 'Rejected';
 }
 
 export interface ComplianceAudit {

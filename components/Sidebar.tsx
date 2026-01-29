@@ -5,9 +5,8 @@ import {
   Users, 
   Calendar, 
   ShieldCheck, 
-  Settings, 
-  LogOut, 
-  Briefcase 
+  Clock,
+  LogOut 
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -17,46 +16,52 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'employees', label: 'Employees', icon: Users },
-    { id: 'leave', label: 'Leave Management', icon: Calendar },
-    { id: 'recruitment', label: 'Recruitment', icon: Briefcase },
-    { id: 'compliance', label: 'Compliance & GDPR', icon: ShieldCheck },
-    { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'dashboard', label: 'Dash', icon: LayoutDashboard },
+    { id: 'employees', label: 'PIM', icon: Users },
+    { id: 'leave', label: 'Leave', icon: Calendar },
+    { id: 'timesheets', label: 'Time', icon: Clock },
+    { id: 'compliance', label: 'GDPR', icon: ShieldCheck },
   ];
 
   return (
-    <div className="w-64 bg-white h-screen border-r border-slate-200 flex flex-col fixed left-0 top-0">
-      <div className="p-6">
-        <div className="flex items-center gap-2 mb-8">
-          <div className="bg-indigo-600 p-2 rounded-lg">
-            <ShieldCheck className="text-white h-6 w-6" />
-          </div>
-          <h1 className="text-xl font-bold text-slate-800">LuminaHR</h1>
+    <div className="w-20 bg-white h-screen border-r border-slate-200 flex flex-col fixed left-0 top-0 z-40 transition-all duration-300">
+      {/* Compact Logo Section */}
+      <div className="py-6 flex flex-col items-center justify-center border-b border-slate-50">
+        <div className="bg-indigo-600 p-2 rounded-xl shadow-lg shadow-indigo-100 mb-2">
+          <ShieldCheck className="text-white h-6 w-6" />
         </div>
-        
-        <nav className="space-y-1">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                activeTab === item.id 
-                  ? 'bg-indigo-50 text-indigo-700 font-medium' 
-                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
-              }`}
-            >
-              <item.icon className="h-5 w-5" />
-              {item.label}
-            </button>
-          ))}
-        </nav>
+        <span className="text-[10px] font-black tracking-tighter text-indigo-900 uppercase">Lumina</span>
       </div>
+      
+      {/* Compact Navigation */}
+      <nav className="flex-1 py-4 space-y-2 flex flex-col items-center overflow-y-auto scrollbar-hide">
+        {menuItems.map((item) => (
+          <button
+            key={item.id}
+            onClick={() => setActiveTab(item.id)}
+            className={`group relative w-14 h-14 flex flex-col items-center justify-center rounded-xl transition-all duration-200 ${
+              activeTab === item.id 
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200 scale-105' 
+                : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
+            }`}
+          >
+            <item.icon className={`${activeTab === item.id ? 'h-5 w-5' : 'h-6 w-6'} mb-0.5`} />
+            <span className={`text-[9px] font-bold tracking-tight uppercase ${activeTab === item.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}>
+              {item.label}
+            </span>
+            
+            {/* Tooltip for accessibility when label is hidden/small */}
+            <div className="absolute left-20 bg-slate-800 text-white px-2 py-1 rounded text-[10px] font-medium opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+              {item.id.charAt(0).toUpperCase() + item.id.slice(1)}
+            </div>
+          </button>
+        ))}
+      </nav>
 
-      <div className="mt-auto p-6 border-t border-slate-100">
-        <button className="w-full flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-red-600 transition-colors">
-          <LogOut className="h-5 w-5" />
-          Logout
+      {/* Logout at bottom */}
+      <div className="py-6 border-t border-slate-100 flex justify-center">
+        <button className="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
+          <LogOut className="h-6 w-6" />
         </button>
       </div>
     </div>
