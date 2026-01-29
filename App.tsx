@@ -19,8 +19,8 @@ const App: React.FC = () => {
 
   // Security check: Redirect if role change removes access to current tab
   useEffect(() => {
-    const allowedTabs = ROLE_PERMISSIONS[userRole] || [];
-    if (!allowedTabs.includes(activeTab)) {
+    const rolePermissions = ROLE_PERMISSIONS[userRole] || {};
+    if (!rolePermissions[activeTab]?.read) {
       setActiveTab('dashboard');
     }
     setIsRoleDropdownOpen(false);

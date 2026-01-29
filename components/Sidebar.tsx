@@ -30,8 +30,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, userRole }) 
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
-  const allowedTabs = ROLE_PERMISSIONS[userRole] || [];
-  const menuItems = allMenuItems.filter(item => allowedTabs.includes(item.id));
+  const rolePermissions = ROLE_PERMISSIONS[userRole] || {};
+  const menuItems = allMenuItems.filter(item => rolePermissions[item.id]?.read);
 
   return (
     <div className="w-20 bg-white h-screen border-r border-slate-200 flex flex-col fixed left-0 top-0 z-40 transition-all duration-300">

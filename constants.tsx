@@ -1,14 +1,55 @@
 
 import { Employee, EmployeeStatus, LeaveRequest, TimesheetEntry, LeaveStatus, UserRole, Holiday, Client, OfficeLocation, AuditLogEntry } from './types';
 
-export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
-  [UserRole.EMPLOYEE]: ['dashboard', 'leave', 'timesheets'],
-  [UserRole.HR_EXECUTIVE]: ['dashboard', 'employees', 'leave'],
-  [UserRole.HR_MANAGER]: ['dashboard', 'employees', 'leave', 'compliance'],
-  [UserRole.OPS_EXECUTIVE]: ['dashboard', 'employees', 'timesheets'],
-  [UserRole.OPS_MANAGER]: ['dashboard', 'employees', 'timesheets', 'roadmap'],
-  [UserRole.APP_ADMIN]: ['dashboard', 'employees', 'leave', 'timesheets', 'compliance'],
-  [UserRole.SYSTEM_ADMIN]: ['dashboard', 'employees', 'leave', 'timesheets', 'compliance', 'roadmap', 'settings'],
+export interface Permission {
+  read: boolean;
+  write: boolean;
+}
+
+export const ROLE_PERMISSIONS: Record<UserRole, Record<string, Permission>> = {
+  [UserRole.EMPLOYEE]: {
+    dashboard: { read: true, write: false },
+    leave: { read: true, write: true },
+    timesheets: { read: true, write: true },
+  },
+  [UserRole.HR_EXECUTIVE]: {
+    dashboard: { read: true, write: false },
+    employees: { read: true, write: false },
+    leave: { read: true, write: true },
+  },
+  [UserRole.HR_MANAGER]: {
+    dashboard: { read: true, write: false },
+    employees: { read: true, write: true },
+    leave: { read: true, write: true },
+    compliance: { read: true, write: true },
+  },
+  [UserRole.OPS_EXECUTIVE]: {
+    dashboard: { read: true, write: false },
+    employees: { read: true, write: false },
+    timesheets: { read: true, write: false },
+  },
+  [UserRole.OPS_MANAGER]: {
+    dashboard: { read: true, write: false },
+    employees: { read: true, write: false },
+    timesheets: { read: true, write: true },
+    roadmap: { read: true, write: false },
+  },
+  [UserRole.APP_ADMIN]: {
+    dashboard: { read: true, write: true },
+    employees: { read: true, write: true },
+    leave: { read: true, write: true },
+    timesheets: { read: true, write: true },
+    compliance: { read: true, write: false },
+  },
+  [UserRole.SYSTEM_ADMIN]: {
+    dashboard: { read: true, write: true },
+    employees: { read: true, write: true },
+    leave: { read: true, write: true },
+    timesheets: { read: true, write: true },
+    compliance: { read: true, write: true },
+    roadmap: { read: true, write: true },
+    settings: { read: true, write: true },
+  },
 };
 
 export const MOCK_EMPLOYEES: Employee[] = [

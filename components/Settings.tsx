@@ -24,7 +24,9 @@ import {
   Grid3X3,
   CheckCircle2,
   XCircle,
-  Shield
+  Shield,
+  Eye,
+  Pencil
 } from 'lucide-react';
 import { MOCK_HOLIDAYS, MOCK_CLIENTS, MOCK_LOCATIONS, MOCK_AUDIT_LOGS, ROLE_PERMISSIONS } from '../constants';
 import { UserRole } from '../types';
@@ -59,12 +61,16 @@ const Settings: React.FC = () => {
       <div className="animate-in fade-in slide-in-from-bottom-2 duration-400">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-lg font-bold text-slate-800">Accessibility Matrix</h3>
-            <p className="text-sm text-slate-500">Cross-reference role-based access control (RBAC) mapping for the entire platform.</p>
+            <h3 className="text-lg font-bold text-slate-800">Granular Accessibility Matrix</h3>
+            <p className="text-sm text-slate-500">Define Read (View) and Write (Edit) permissions for all organizational roles.</p>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-bold border border-green-100">
-            <ShieldCheck size={14} />
-            Art. 25 & 32 Compliant
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-[10px] font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-1 rounded-full">
+              <Eye size={12} /> Read Only
+            </div>
+            <div className="flex items-center gap-2 text-[10px] font-bold text-amber-600 uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-full">
+              <Pencil size={12} /> Full Write
+            </div>
           </div>
         </div>
 
@@ -77,7 +83,7 @@ const Settings: React.FC = () => {
                   <div className="text-sm font-bold text-slate-600">App Resource</div>
                 </th>
                 {roles.map(role => (
-                  <th key={role} className="p-4 border-b border-slate-100 min-w-[140px] text-center group">
+                  <th key={role} className="p-4 border-b border-slate-100 min-w-[160px] text-center group bg-slate-50/50">
                     <div className="text-[10px] font-black text-slate-400 uppercase tracking-tighter mb-1 transition-colors group-hover:text-indigo-600">
                       {role.split(' ')[0]}
                     </div>
@@ -96,25 +102,29 @@ const Settings: React.FC = () => {
                     </div>
                   </td>
                   {roles.map(role => {
-                    const hasAccess = ROLE_PERMISSIONS[role].includes(mod.id);
+                    const perms = ROLE_PERMISSIONS[role][mod.id] || { read: false, write: false };
                     return (
-                      <td key={`${mod.id}-${role}`} className={`p-4 text-center border-l border-slate-50/50 ${hasAccess ? 'bg-green-50/10' : 'bg-red-50/5'}`}>
-                        <div className="flex items-center justify-center">
-                          {hasAccess ? (
-                            <div className="flex flex-col items-center gap-1">
-                              <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 shadow-sm border border-green-200 animate-in zoom-in duration-300">
-                                <ShieldCheck size={16} />
-                              </div>
-                              <span className="text-[8px] font-black text-green-600 uppercase">Granted</span>
+                      <td key={`${mod.id}-${role}`} className="p-4 text-center border-l border-slate-50/50">
+                        <div className="flex items-center justify-center gap-3">
+                          {/* Read Indicator */}
+                          <div className={`flex flex-col items-center gap-1 transition-all ${perms.read ? 'opacity-100' : 'opacity-10'}`}>
+                            <div className={`h-8 w-8 rounded-lg flex items-center justify-center border shadow-sm ${
+                              perms.read ? 'bg-indigo-50 border-indigo-200 text-indigo-600' : 'bg-slate-50 border-slate-100 text-slate-300'
+                            }`}>
+                              <Eye size={16} />
                             </div>
-                          ) : (
-                            <div className="flex flex-col items-center gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
-                              <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 border border-slate-100">
-                                <Lock size={16} />
-                              </div>
-                              <span className="text-[8px] font-black text-slate-300 uppercase">Locked</span>
+                            <span className="text-[8px] font-black uppercase">Read</span>
+                          </div>
+
+                          {/* Write Indicator */}
+                          <div className={`flex flex-col items-center gap-1 transition-all ${perms.write ? 'opacity-100' : 'opacity-10'}`}>
+                            <div className={`h-8 w-8 rounded-lg flex items-center justify-center border shadow-sm ${
+                              perms.write ? 'bg-amber-50 border-amber-200 text-amber-600' : 'bg-slate-50 border-slate-100 text-slate-300'
+                            }`}>
+                              <Pencil size={16} />
                             </div>
-                          )}
+                            <span className="text-[8px] font-black uppercase">Write</span>
+                          </div>
                         </div>
                       </td>
                     );
