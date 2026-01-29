@@ -17,14 +17,14 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<string, Permission>> = {
     dashboard: { read: true, write: false },
     employees: { read: true, write: false },
     leave: { read: true, write: true },
-    payDetails: { read: true, write: true }, // HR Team has full access
+    payDetails: { read: true, write: true },
   },
   [UserRole.HR_MANAGER]: {
     dashboard: { read: true, write: false },
     employees: { read: true, write: true },
     leave: { read: true, write: true },
     compliance: { read: true, write: true },
-    payDetails: { read: true, write: true }, // HR Team has full access
+    payDetails: { read: true, write: true },
   },
   [UserRole.OPS_EXECUTIVE]: {
     dashboard: { read: true, write: false },
@@ -45,7 +45,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<string, Permission>> = {
     leave: { read: true, write: true },
     timesheets: { read: true, write: true },
     compliance: { read: true, write: false },
-    payDetails: { read: false, write: false }, // Restricted per request
+    payDetails: { read: false, write: false },
   },
   [UserRole.SYSTEM_ADMIN]: {
     dashboard: { read: true, write: true },
@@ -55,7 +55,8 @@ export const ROLE_PERMISSIONS: Record<UserRole, Record<string, Permission>> = {
     compliance: { read: true, write: true },
     roadmap: { read: true, write: true },
     settings: { read: true, write: true },
-    payDetails: { read: false, write: false }, // Restricted per request
+    payDetails: { read: false, write: false },
+    aiConfig: { read: true, write: true },
   },
 };
 

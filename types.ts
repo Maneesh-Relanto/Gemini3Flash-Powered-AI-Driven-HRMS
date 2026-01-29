@@ -22,6 +22,21 @@ export enum UserRole {
   SYSTEM_ADMIN = 'System Admin'
 }
 
+export enum AIProvider {
+  GEMINI = 'Google Gemini',
+  OPENAI = 'OpenAI (Coming Soon)',
+  AZURE = 'Azure AI (Coming Soon)',
+  INTERNAL = 'Internal LLM (Coming Soon)'
+}
+
+export interface AIConfiguration {
+  activeProvider: AIProvider;
+  modelName: string;
+  temperature: number;
+  maxTokens: number;
+  lastUpdated: string;
+}
+
 export interface SalaryRecord {
   id: string;
   amount: number;
