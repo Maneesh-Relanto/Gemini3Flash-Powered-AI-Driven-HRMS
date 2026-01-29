@@ -77,3 +77,26 @@ export interface ComplianceAudit {
   module: string;
   details: string;
 }
+
+export interface Holiday {
+  id: string;
+  name: string;
+  date: string;
+  type: 'Public' | 'Optional';
+}
+
+export interface Client {
+  id: string;
+  name: string;
+  industry: string;
+  location: string;
+  status: 'Active' | 'Inactive';
+}
+
+export interface OfficeLocation {
+  id: string;
+  name: string;
+  city: string;
+  country: string;
+  type: 'HQ' | 'Branch' | 'Remote Hub';
+}

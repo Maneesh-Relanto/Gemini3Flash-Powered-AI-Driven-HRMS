@@ -7,6 +7,7 @@ import {
   ShieldCheck, 
   Clock,
   ListTodo,
+  Settings,
   LogOut 
 } from 'lucide-react';
 import { UserRole } from '../types';
@@ -26,6 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, userRole }) 
     { id: 'timesheets', label: 'Time', icon: Clock },
     { id: 'compliance', label: 'GDPR', icon: ShieldCheck },
     { id: 'roadmap', label: 'Tasks', icon: ListTodo },
+    { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
   const allowedTabs = ROLE_PERMISSIONS[userRole] || [];

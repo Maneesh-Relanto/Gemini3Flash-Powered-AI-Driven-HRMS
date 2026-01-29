@@ -7,6 +7,7 @@ import ComplianceCenter from './components/ComplianceCenter';
 import LeaveManagement from './components/LeaveManagement';
 import TimesheetManagement from './components/TimesheetManagement';
 import TaskMaster from './components/TaskMaster';
+import Settings from './components/Settings';
 import { Bell, Search, ShieldAlert, ChevronDown, UserCircle, Key } from 'lucide-react';
 import { UserRole } from './types';
 import { ROLE_PERMISSIONS } from './constants';
@@ -39,6 +40,8 @@ const App: React.FC = () => {
         return <ComplianceCenter />;
       case 'roadmap':
         return <TaskMaster />;
+      case 'settings':
+        return <Settings />;
       default:
         return (
           <div className="flex flex-col items-center justify-center h-[70vh] text-slate-400">
