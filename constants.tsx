@@ -1,5 +1,15 @@
 
-import { Employee, EmployeeStatus, LeaveRequest, TimesheetEntry, LeaveStatus } from './types';
+import { Employee, EmployeeStatus, LeaveRequest, TimesheetEntry, LeaveStatus, UserRole } from './types';
+
+export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
+  [UserRole.EMPLOYEE]: ['dashboard', 'leave', 'timesheets'],
+  [UserRole.HR_EXECUTIVE]: ['dashboard', 'employees', 'leave'],
+  [UserRole.HR_MANAGER]: ['dashboard', 'employees', 'leave', 'compliance'],
+  [UserRole.OPS_EXECUTIVE]: ['dashboard', 'employees', 'timesheets'],
+  [UserRole.OPS_MANAGER]: ['dashboard', 'employees', 'timesheets', 'roadmap'],
+  [UserRole.APP_ADMIN]: ['dashboard', 'employees', 'leave', 'timesheets', 'compliance'],
+  [UserRole.SYSTEM_ADMIN]: ['dashboard', 'employees', 'leave', 'timesheets', 'compliance', 'roadmap'],
+};
 
 export const MOCK_EMPLOYEES: Employee[] = [
   {

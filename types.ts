@@ -12,6 +12,16 @@ export enum LeaveStatus {
   REJECTED = 'Rejected'
 }
 
+export enum UserRole {
+  EMPLOYEE = 'Employee',
+  HR_EXECUTIVE = 'HR Executive',
+  HR_MANAGER = 'HR Manager',
+  OPS_EXECUTIVE = 'Ops Executive',
+  OPS_MANAGER = 'Ops Manager',
+  APP_ADMIN = 'Application Admin',
+  SYSTEM_ADMIN = 'System Admin'
+}
+
 export interface Employee {
   id: string;
   firstName: string;

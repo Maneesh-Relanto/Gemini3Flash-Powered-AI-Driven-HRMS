@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import EmployeeList from './components/EmployeeList';
@@ -7,10 +7,23 @@ import ComplianceCenter from './components/ComplianceCenter';
 import LeaveManagement from './components/LeaveManagement';
 import TimesheetManagement from './components/TimesheetManagement';
 import TaskMaster from './components/TaskMaster';
-import { Bell, Search, ShieldAlert } from 'lucide-react';
+import { Bell, Search, ShieldAlert, ChevronDown, UserCircle, Key } from 'lucide-react';
+import { UserRole } from './types';
+import { ROLE_PERMISSIONS } from './constants';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [userRole, setUserRole] = useState<UserRole>(UserRole.SYSTEM_ADMIN);
+  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
+
+  // Security check: Redirect if role change removes access to current tab
+  useEffect(() => {
+    const allowedTabs = ROLE_PERMISSIONS[userRole] || [];
+    if (!allowedTabs.includes(activeTab)) {
+      setActiveTab('dashboard');
+    }
+    setIsRoleDropdownOpen(false);
+  }, [userRole]);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -39,13 +52,47 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex bg-slate-50">
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} userRole={userRole} />
       
       <main className="flex-1 ml-20 p-8 transition-all duration-300">
         <header className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="text-2xl font-bold text-slate-900 capitalize tracking-tight">{activeTab.replace('-', ' ')}</h2>
-            <p className="text-slate-500 text-sm">Welcome back, Admin Marcus.</p>
+          <div className="flex items-center gap-6">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-900 capitalize tracking-tight">{activeTab.replace('-', ' ')}</h2>
+              <p className="text-slate-500 text-sm">Welcome back, Admin Marcus.</p>
+            </div>
+            
+            {/* RBAC Role Switcher (Demo Only) */}
+            <div className="relative">
+              <button 
+                onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
+                className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-100 rounded-lg text-[10px] font-black text-indigo-700 uppercase tracking-widest hover:bg-indigo-100 transition-all"
+              >
+                <Key size={12} />
+                Switch Role: {userRole}
+                <ChevronDown size={12} />
+              </button>
+
+              {isRoleDropdownOpen && (
+                <div className="absolute top-full left-0 mt-2 w-56 bg-white border border-slate-200 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="p-3 border-b border-slate-100 bg-slate-50">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Select Permission Set</p>
+                  </div>
+                  {Object.values(UserRole).map((role) => (
+                    <button
+                      key={role}
+                      onClick={() => setUserRole(role)}
+                      className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-colors flex items-center justify-between ${
+                        userRole === role ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-indigo-50 hover:text-indigo-700'
+                      }`}
+                    >
+                      {role}
+                      {userRole === role && <UserCircle size={14} />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center gap-4">
@@ -71,7 +118,7 @@ const App: React.FC = () => {
               </div>
               <div className="text-left hidden sm:block">
                 <p className="text-sm font-bold text-slate-800 leading-tight">Marcus Wright</p>
-                <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">System Admin</p>
+                <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">{userRole}</p>
               </div>
             </button>
           </div>
@@ -88,9 +135,9 @@ const App: React.FC = () => {
             <ShieldAlert size={20} />
           </div>
           <div>
-            <p className="text-sm font-bold text-slate-800">Compliance Sync Active</p>
-            <p className="text-xs text-slate-500 mt-1">
-              Session logged for Article 30. All PII access is audited.
+            <p className="text-sm font-bold text-slate-800">RBAC active: {userRole}</p>
+            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+              Your access is restricted to authorized modules per GDPR Article 32.
             </p>
           </div>
         </div>
