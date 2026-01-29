@@ -6,6 +6,7 @@ import EmployeeList from './components/EmployeeList';
 import ComplianceCenter from './components/ComplianceCenter';
 import LeaveManagement from './components/LeaveManagement';
 import TimesheetManagement from './components/TimesheetManagement';
+import TaskMaster from './components/TaskMaster';
 import { Bell, Search, ShieldAlert } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -23,6 +24,8 @@ const App: React.FC = () => {
         return <TimesheetManagement />;
       case 'compliance':
         return <ComplianceCenter />;
+      case 'roadmap':
+        return <TaskMaster />;
       default:
         return (
           <div className="flex flex-col items-center justify-center h-[70vh] text-slate-400">
@@ -38,7 +41,6 @@ const App: React.FC = () => {
     <div className="min-h-screen flex bg-slate-50">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       
-      {/* Adjusted margin from ml-64 to ml-20 */}
       <main className="flex-1 ml-20 p-8 transition-all duration-300">
         <header className="flex items-center justify-between mb-8">
           <div>
@@ -80,7 +82,6 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      {/* GDPR Floating Notification */}
       <div className="fixed bottom-6 right-6 bg-white border border-indigo-100 p-4 rounded-2xl shadow-2xl shadow-indigo-200/20 max-w-xs animate-in slide-in-from-right-8 duration-700 z-50 border-l-4 border-l-indigo-600">
         <div className="flex items-start gap-3">
           <div className="bg-indigo-50 p-2 rounded-lg text-indigo-600">

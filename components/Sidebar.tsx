@@ -6,6 +6,7 @@ import {
   Calendar, 
   ShieldCheck, 
   Clock,
+  ListTodo,
   LogOut 
 } from 'lucide-react';
 
@@ -21,6 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
     { id: 'leave', label: 'Leave', icon: Calendar },
     { id: 'timesheets', label: 'Time', icon: Clock },
     { id: 'compliance', label: 'GDPR', icon: ShieldCheck },
+    { id: 'roadmap', label: 'Tasks', icon: ListTodo },
   ];
 
   return (
@@ -50,9 +52,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
               {item.label}
             </span>
             
-            {/* Tooltip for accessibility when label is hidden/small */}
             <div className="absolute left-20 bg-slate-800 text-white px-2 py-1 rounded text-[10px] font-medium opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
-              {item.id.charAt(0).toUpperCase() + item.id.slice(1)}
+              {item.label}
             </div>
           </button>
         ))}

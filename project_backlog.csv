@@ -1,0 +1,16 @@
+ID,Module,Feature,Priority,Status,GDPR Compliance
+TASK-001,PIM,Employee Directory UI,High,Completed,Art 15 (Access)
+TASK-002,PIM,PII Encryption Layer,High,Completed,Art 32 (Security)
+TASK-003,PIM,Employee Side-drawer Details,Medium,Completed,Art 15 (Access)
+TASK-004,Leave,Leave Request Workflow,High,Completed,Recital 47
+TASK-005,Leave,Balance Tracking Engine,Medium,Completed,Art 5 (Accuracy)
+TASK-006,Leave,Sensitive Reason Masking,High,Completed,Art 9 (Special Categories)
+TASK-007,Time,Weekly Timesheet Grid,High,Completed,Art 5 (Minimization)
+TASK-008,Time,Project/Task Association,Low,Completed,N/A
+TASK-009,Time,Submission & Approval Flow,Medium,Completed,Art 30 (ROPA)
+TASK-010,Compliance,AI GDPR Assistant,Medium,Completed,General Guidance
+TASK-011,Compliance,Subject Access Request (SAR) Export,High,In Progress,Art 20 (Portability)
+TASK-012,Compliance,Right to Erasure (Forget Me) Hook,High,In Progress,Art 17 (Erasure)
+TASK-013,Compliance,Centralized Audit Log,Medium,In Progress,Art 30 (ROPA)
+TASK-014,Core,AI HR Insights Engine,Low,Completed,N/A
+TASK-015,Security,Multi-Role Access Control (RBAC),High,Pending,Art 25 (Privacy by Design)
