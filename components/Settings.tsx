@@ -19,12 +19,17 @@ import {
   UserCircle,
   Clock,
   Filter,
-  ArrowUpDown
+  ShieldCheck,
+  Lock,
+  Grid3X3,
+  CheckCircle2,
+  XCircle,
+  Shield
 } from 'lucide-react';
-import { MOCK_HOLIDAYS, MOCK_CLIENTS, MOCK_LOCATIONS, MOCK_AUDIT_LOGS } from '../constants';
+import { MOCK_HOLIDAYS, MOCK_CLIENTS, MOCK_LOCATIONS, MOCK_AUDIT_LOGS, ROLE_PERMISSIONS } from '../constants';
 import { UserRole } from '../types';
 
-type SettingsTab = 'holidays' | 'clients' | 'locations' | 'audit';
+type SettingsTab = 'holidays' | 'clients' | 'locations' | 'audit' | 'rbac';
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState<SettingsTab>('holidays');
@@ -37,6 +42,121 @@ const Settings: React.FC = () => {
       log.details.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [searchQuery]);
+
+  const renderRBACMatrix = () => {
+    const roles = Object.values(UserRole);
+    const modules = [
+      { id: 'dashboard', label: 'Dashboard', desc: 'Core KPIs and AI Insights' },
+      { id: 'employees', label: 'PIM (Personnel)', desc: 'Employee Directory and Profiles' },
+      { id: 'leave', label: 'Leave Management', desc: 'Vacation and Sick Leave Tracking' },
+      { id: 'timesheets', label: 'Time Tracking', desc: 'Weekly Timesheets and Projects' },
+      { id: 'compliance', label: 'GDPR / Compliance', desc: 'Regulatory Oversight and SAR' },
+      { id: 'roadmap', label: 'Task Master', desc: 'Development Roadmap and Tasks' },
+      { id: 'settings', label: 'System Settings', desc: 'Master Data and RBAC Config' },
+    ];
+
+    return (
+      <div className="animate-in fade-in slide-in-from-bottom-2 duration-400">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-lg font-bold text-slate-800">Accessibility Matrix</h3>
+            <p className="text-sm text-slate-500">Cross-reference role-based access control (RBAC) mapping for the entire platform.</p>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-bold border border-green-100">
+            <ShieldCheck size={14} />
+            Art. 25 & 32 Compliant
+          </div>
+        </div>
+
+        <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50">
+                <th className="p-6 border-b border-slate-100 min-w-[240px]">
+                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Module / Capability</div>
+                  <div className="text-sm font-bold text-slate-600">App Resource</div>
+                </th>
+                {roles.map(role => (
+                  <th key={role} className="p-4 border-b border-slate-100 min-w-[140px] text-center group">
+                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-tighter mb-1 transition-colors group-hover:text-indigo-600">
+                      {role.split(' ')[0]}
+                    </div>
+                    <div className="text-[11px] font-bold text-slate-800 truncate">{role}</div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {modules.map(mod => (
+                <tr key={mod.id} className="hover:bg-slate-50/50 transition-colors group">
+                  <td className="p-6">
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold text-slate-800 mb-0.5">{mod.label}</span>
+                      <span className="text-[10px] text-slate-400 font-medium group-hover:text-slate-500">{mod.desc}</span>
+                    </div>
+                  </td>
+                  {roles.map(role => {
+                    const hasAccess = ROLE_PERMISSIONS[role].includes(mod.id);
+                    return (
+                      <td key={`${mod.id}-${role}`} className={`p-4 text-center border-l border-slate-50/50 ${hasAccess ? 'bg-green-50/10' : 'bg-red-50/5'}`}>
+                        <div className="flex items-center justify-center">
+                          {hasAccess ? (
+                            <div className="flex flex-col items-center gap-1">
+                              <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 shadow-sm border border-green-200 animate-in zoom-in duration-300">
+                                <ShieldCheck size={16} />
+                              </div>
+                              <span className="text-[8px] font-black text-green-600 uppercase">Granted</span>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
+                              <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 border border-slate-100">
+                                <Lock size={16} />
+                              </div>
+                              <span className="text-[8px] font-black text-slate-300 uppercase">Locked</span>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-2xl">
+            <h4 className="text-xs font-black text-indigo-700 uppercase tracking-widest mb-2 flex items-center gap-2">
+              <Shield size={14} />
+              Least Privilege
+            </h4>
+            <p className="text-[11px] text-indigo-600 leading-relaxed">
+              Default access follows the Principle of Least Privilege. Users only see modules necessary for their specific job function.
+            </p>
+          </div>
+          <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl">
+            <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+              <Activity size={14} className="text-indigo-400" />
+              Dynamic Updates
+            </h4>
+            <p className="text-[11px] text-slate-500 leading-relaxed">
+              Permissions are hot-reloaded. Changing the RBAC configuration propagates instantly across all active sessions.
+            </p>
+          </div>
+          <div className="p-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
+            <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-2 flex items-center gap-2">
+              <Search size={14} className="text-indigo-600" />
+              Audit Trail
+            </h4>
+            <p className="text-[11px] text-slate-500 leading-relaxed">
+              Every access attempt to restricted modules is logged with IP, timestamp, and result in the System Audit Log.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const renderAuditLogs = () => (
     <div className="animate-in fade-in slide-in-from-bottom-2 duration-400">
@@ -297,6 +417,7 @@ const Settings: React.FC = () => {
     { id: 'clients', label: 'Clients', icon: Building2 },
     { id: 'locations', label: 'Locations', icon: MapPin },
     { id: 'audit', label: 'Audit Logs', icon: History },
+    { id: 'rbac', label: 'Access Matrix', icon: Grid3X3 },
   ];
 
   return (
@@ -330,13 +451,13 @@ const Settings: React.FC = () => {
           ))}
         </div>
 
-        <div className="mt-6 bg-slate-900 rounded-2xl p-6 text-white relative overflow-hidden group">
+        <div className="mt-6 bg-slate-900 rounded-2xl p-6 text-white relative overflow-hidden group border border-slate-800">
           <div className="relative z-10">
-            <p className="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">System Security</p>
-            <h4 className="text-lg font-bold mb-2">Audit: Enabled</h4>
+            <p className="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">Security Health</p>
+            <h4 className="text-lg font-bold mb-2">RBAC: Enforced</h4>
             <div className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></div>
-              <span className="text-[10px] font-bold text-slate-400">IP Filtering: ON</span>
+              <span className="text-[10px] font-bold text-slate-400">7 Roles Configured</span>
             </div>
           </div>
           <Activity size={80} className="absolute -bottom-4 -right-4 text-white/5 group-hover:scale-110 transition-transform duration-1000" />
@@ -344,11 +465,12 @@ const Settings: React.FC = () => {
       </div>
 
       {/* Content Area */}
-      <div className="flex-1">
+      <div className="flex-1 overflow-x-hidden">
         {activeTab === 'holidays' && renderHolidays()}
         {activeTab === 'clients' && renderClients()}
         {activeTab === 'locations' && renderLocations()}
         {activeTab === 'audit' && renderAuditLogs()}
+        {activeTab === 'rbac' && renderRBACMatrix()}
       </div>
     </div>
   );
