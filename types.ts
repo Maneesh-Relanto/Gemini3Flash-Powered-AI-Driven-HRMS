@@ -12,6 +12,13 @@ export enum LeaveStatus {
   REJECTED = 'Rejected'
 }
 
+export enum LeaveType {
+  ANNUAL = 'Annual',
+  SICK = 'Sick',
+  PERSONAL = 'Personal',
+  MATERNITY_PATERNITY = 'Maternity/Paternity'
+}
+
 export enum UserRole {
   EMPLOYEE = 'Employee',
   HR_EXECUTIVE = 'HR Executive',
@@ -66,6 +73,8 @@ export interface Employee {
   sensitiveDataEncrypted: boolean;
   payGrade?: string;
   supervisor?: string;
+  locationId?: string;
+  clientId?: string;
   emergencyContact?: {
     name: string;
     relationship: string;
@@ -87,7 +96,7 @@ export interface LeaveRequest {
   id: string;
   employeeId: string;
   employeeName: string;
-  type: 'Annual' | 'Sick' | 'Personal' | 'Maternity/Paternity';
+  type: LeaveType;
   startDate: string;
   endDate: string;
   days: number;
@@ -103,15 +112,6 @@ export interface TimesheetEntry {
   project: string;
   task: string;
   status: 'Draft' | 'Submitted' | 'Approved' | 'Rejected';
-}
-
-export interface ComplianceAudit {
-  id: string;
-  timestamp: string;
-  user: string;
-  action: string;
-  module: string;
-  details: string;
 }
 
 export interface Holiday {

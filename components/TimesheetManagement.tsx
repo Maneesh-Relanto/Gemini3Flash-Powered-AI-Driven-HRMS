@@ -10,9 +10,13 @@ import {
   Plus,
   Briefcase
 } from 'lucide-react';
-import { MOCK_TIMESHEETS } from '../constants';
+import { Client } from '../types';
 
-const TimesheetManagement: React.FC = () => {
+interface TimesheetProps {
+  clients: Client[];
+}
+
+const TimesheetManagement: React.FC<TimesheetProps> = ({ clients }) => {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
@@ -49,9 +53,14 @@ const TimesheetManagement: React.FC = () => {
             <div className="col-span-3 space-y-1">
               <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus-within:ring-2 focus-within:ring-indigo-500 transition-all">
                 <Briefcase size={14} className="text-slate-400" />
-                <input className="bg-transparent border-none text-sm w-full outline-none font-medium" defaultValue="Project Genesis" />
+                <select className="bg-transparent border-none text-sm w-full outline-none font-bold appearance-none cursor-pointer">
+                  {clients.map(cli => (
+                    <option key={cli.id} value={cli.id}>{cli.name}</option>
+                  ))}
+                  <option value="internal">Internal Admin</option>
+                </select>
               </div>
-              <input className="px-3 text-xs text-slate-500 w-full bg-transparent outline-none italic pl-8" defaultValue="Backend API Implementation" />
+              <input className="px-3 text-xs text-slate-500 w-full bg-transparent outline-none italic pl-8" placeholder="Enter task description..." defaultValue="Backend API Implementation" />
             </div>
             {[8, 8, 7.5, 8, 6, 0, 0].map((h, i) => (
               <input 

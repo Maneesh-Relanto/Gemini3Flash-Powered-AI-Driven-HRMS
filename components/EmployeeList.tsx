@@ -28,16 +28,20 @@ import {
   Eye,
   ArrowUpRight,
   Plus,
-  ShieldAlert
+  ShieldAlert,
+  Building,
+  UserCircle
 } from 'lucide-react';
 import { MOCK_EMPLOYEES, DEPARTMENTS, ROLE_PERMISSIONS } from '../constants';
-import { Employee, EmployeeStatus, UserRole } from '../types';
+import { Employee, EmployeeStatus, UserRole, OfficeLocation, Client } from '../types';
 
 interface EmployeeListProps {
   currentUserRole: UserRole;
+  locations: OfficeLocation[];
+  clients: Client[];
 }
 
-const EmployeeList: React.FC<EmployeeListProps> = ({ currentUserRole }) => {
+const EmployeeList: React.FC<EmployeeListProps> = ({ currentUserRole, locations, clients }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -236,6 +240,32 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ currentUserRole }) => {
                   <select className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none appearance-none">
                     {DEPARTMENTS.map(d => <option key={d}>{d}</option>)}
                   </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Work Location *</label>
+                  <div className="relative">
+                    <MapPin size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <select className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none appearance-none">
+                      {locations.map(loc => (
+                        <option key={loc.id} value={loc.id}>{loc.name} ({loc.city})</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Assigned Client / Project</label>
+                  <div className="relative">
+                    <Briefcase size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <select className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none appearance-none">
+                      <option value="">None (Internal)</option>
+                      {clients.map(cli => (
+                        <option key={cli.id} value={cli.id}>{cli.name}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -518,7 +548,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ currentUserRole }) => {
             {/* Tab Navigation */}
             <div className="flex border-b border-slate-100 px-6 overflow-x-auto scrollbar-hide">
               {[
-                { id: 'personal', label: 'Personal', icon: UserCheck },
+                { id: 'personal', label: 'Personal', icon: UserCircle },
                 { id: 'job', label: 'Job', icon: Briefcase },
                 { id: 'pay', label: 'Compensation', icon: Banknote },
                 { id: 'privacy', label: 'GDPR', icon: Lock },
@@ -576,7 +606,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ currentUserRole }) => {
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
-                        <Calendar size={16} className="text-slate-400 mt-1" />
+                        <MapPin size={16} className="text-slate-400 mt-1" />
                         <div>
                           <p className="text-[10px] text-slate-500 font-bold uppercase">Date of Birth</p>
                           <p className="text-sm text-slate-700">{selectedEmployee.dateOfBirth || 'Not disclosed'}</p>
@@ -613,13 +643,26 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ currentUserRole }) => {
                   
                   <section>
                     <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Organizational Structure</h4>
-                    <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl">
-                      <div className="h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700">
-                        <UserCheck size={20} />
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl">
+                        <div className="h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700">
+                          <UserCheck size={20} />
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-slate-500 font-bold uppercase">Supervisor</p>
+                          <p className="text-sm font-bold text-slate-800">{selectedEmployee.supervisor || 'Reporting to CEO'}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-[10px] text-slate-500 font-bold uppercase">Supervisor</p>
-                        <p className="text-sm font-bold text-slate-800">{selectedEmployee.supervisor || 'Reporting to CEO'}</p>
+                      <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl">
+                        <div className="h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700">
+                          <Building size={20} />
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-slate-500 font-bold uppercase">Work Location</p>
+                          <p className="text-sm font-bold text-slate-800">
+                            {locations.find(l => l.id === selectedEmployee.locationId)?.name || 'Not assigned'}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </section>

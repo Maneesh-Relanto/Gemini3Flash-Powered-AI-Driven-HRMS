@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   LayoutDashboard, 
@@ -10,8 +9,8 @@ import {
   Settings,
   LogOut 
 } from 'lucide-react';
-import { UserRole } from '../types';
-import { ROLE_PERMISSIONS } from '../constants';
+import { UserRole } from '../types.ts';
+import { ROLE_PERMISSIONS } from '../constants.tsx';
 
 interface SidebarProps {
   activeTab: string;

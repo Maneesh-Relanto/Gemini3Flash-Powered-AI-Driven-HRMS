@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Users, 
@@ -15,11 +14,9 @@ import {
   YAxis, 
   CartesianGrid, 
   Tooltip, 
-  ResponsiveContainer,
-  LineChart,
-  Line
+  ResponsiveContainer
 } from 'recharts';
-import { geminiService } from '../services/geminiService';
+import { geminiService } from '../services/geminiService.ts';
 
 const MOCK_STATS = [
   { name: 'Total Employees', value: '450', change: '+12%', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
@@ -47,12 +44,22 @@ const Dashboard: React.FC = () => {
       const res = await geminiService.getHRInsights(450, 7);
       if (res) {
         try {
-          // Attempting to parse JSON if model follows instructions, otherwise raw text
           const cleanedText = res.replace(/```json|```/g, '').trim();
           setAiInsight(JSON.parse(cleanedText));
         } catch (e) {
-          setAiInsight({ trend: "Analyzing performance", recommendation: "Review seasonal hiring plans", impact: "Efficiency optimization" });
+          console.error("Failed to parse AI response", e);
+          setAiInsight({ 
+            trend: "Analyzing performance", 
+            recommendation: "Review seasonal hiring plans", 
+            impact: "Efficiency optimization" 
+          });
         }
+      } else {
+        setAiInsight({
+          trend: "Data analysis complete",
+          recommendation: "Maintain current staffing levels in Engineering.",
+          impact: "Stable development velocity"
+        });
       }
       setLoadingAi(false);
     };
@@ -139,7 +146,6 @@ const Dashboard: React.FC = () => {
             <ArrowRight size={16} />
           </button>
 
-          {/* Abstract SVG Background */}
           <div className="absolute top-0 right-0 -mr-20 -mt-20 opacity-20 pointer-events-none">
             <svg width="300" height="300" viewBox="0 0 300 300" fill="none">
               <circle cx="150" cy="150" r="150" stroke="white" strokeWidth="2" />

@@ -1,21 +1,25 @@
-
 import React, { useState, useEffect } from 'react';
-import Sidebar from './components/Sidebar';
-import Dashboard from './components/Dashboard';
-import EmployeeList from './components/EmployeeList';
-import ComplianceCenter from './components/ComplianceCenter';
-import LeaveManagement from './components/LeaveManagement';
-import TimesheetManagement from './components/TimesheetManagement';
-import TaskMaster from './components/TaskMaster';
-import Settings from './components/Settings';
+import Sidebar from './components/Sidebar.tsx';
+import Dashboard from './components/Dashboard.tsx';
+import EmployeeList from './components/EmployeeList.tsx';
+import ComplianceCenter from './components/ComplianceCenter.tsx';
+import LeaveManagement from './components/LeaveManagement.tsx';
+import TimesheetManagement from './components/TimesheetManagement.tsx';
+import TaskMaster from './components/TaskMaster.tsx';
+import Settings from './components/Settings.tsx';
 import { Bell, Search, ShieldAlert, ChevronDown, UserCircle, Key } from 'lucide-react';
-import { UserRole } from './types';
-import { ROLE_PERMISSIONS } from './constants';
+import { UserRole, Holiday, OfficeLocation, Client } from './types.ts';
+import { ROLE_PERMISSIONS, MOCK_HOLIDAYS, MOCK_LOCATIONS, MOCK_CLIENTS } from './constants.tsx';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [userRole, setUserRole] = useState<UserRole>(UserRole.SYSTEM_ADMIN);
   const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
+
+  // Master Data State
+  const [holidays, setHolidays] = useState<Holiday[]>(MOCK_HOLIDAYS);
+  const [locations, setLocations] = useState<OfficeLocation[]>(MOCK_LOCATIONS);
+  const [clients, setClients] = useState<Client[]>(MOCK_CLIENTS);
 
   // Security check: Redirect if role change removes access to current tab
   useEffect(() => {
@@ -31,23 +35,35 @@ const App: React.FC = () => {
       case 'dashboard':
         return <Dashboard />;
       case 'employees':
-        return <EmployeeList currentUserRole={userRole} />;
+        return (
+          <EmployeeList 
+            currentUserRole={userRole} 
+            locations={locations} 
+            clients={clients} 
+          />
+        );
       case 'leave':
-        return <LeaveManagement />;
+        return <LeaveManagement holidays={holidays} />;
       case 'timesheets':
-        return <TimesheetManagement />;
+        return <TimesheetManagement clients={clients} />;
       case 'compliance':
         return <ComplianceCenter />;
       case 'roadmap':
         return <TaskMaster />;
       case 'settings':
-        return <Settings />;
+        return (
+          <Settings 
+            holidays={holidays} setHolidays={setHolidays}
+            locations={locations} setLocations={setLocations}
+            clients={clients} setClients={setClients}
+          />
+        );
       default:
         return (
           <div className="flex flex-col items-center justify-center h-[70vh] text-slate-400">
             <ShieldAlert size={64} className="mb-4 opacity-20" />
-            <h2 className="text-xl font-medium">Module under development</h2>
-            <p>This section is being built to the highest security standards.</p>
+            <h2 className="text-xl font-medium">Module Restricted</h2>
+            <p>This module requires elevated permissions.</p>
           </div>
         );
     }
@@ -62,10 +78,9 @@ const App: React.FC = () => {
           <div className="flex items-center gap-6">
             <div>
               <h2 className="text-2xl font-bold text-slate-900 capitalize tracking-tight">{activeTab.replace('-', ' ')}</h2>
-              <p className="text-slate-500 text-sm">Welcome back, Admin Marcus.</p>
+              <p className="text-slate-500 text-sm">Welcome back, Marcus Wright.</p>
             </div>
             
-            {/* RBAC Role Switcher (Demo Only) */}
             <div className="relative">
               <button 
                 onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
@@ -103,7 +118,7 @@ const App: React.FC = () => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
               <input 
                 type="text" 
-                placeholder="Global search (PII encrypted)..." 
+                placeholder="Global search..." 
                 className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-72 shadow-sm transition-all"
               />
             </div>

@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 
 // Standard model names for selection
@@ -9,8 +8,12 @@ export const AVAILABLE_MODELS = [
 
 export const geminiService = {
   async getHRInsights(employeeCount: number, leaveCount: number) {
+    if (!process.env.API_KEY) {
+      console.warn("AI Insights: API_KEY is missing. Skipping AI generation.");
+      return null;
+    }
+
     try {
-      // Use the injected process.env.API_KEY which is maintained securely.
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
@@ -45,6 +48,10 @@ export const geminiService = {
   },
 
   async checkCompliance(query: string) {
+    if (!process.env.API_KEY) {
+      return "The AI Compliance assistant is unavailable because the API key is not configured.";
+    }
+
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
